@@ -17,15 +17,26 @@ pair<unordered_map<char, char>, unordered_map<char, char>> getBidirectionalMaps(
     return {alphabetToDigitMap, digitToAlphabetMap};
 }
 
+/*
+Converts a num from one form to another using the given map
+Params: 1. a string num to be converted
+        2. map used for convertion
+Return: converted num as a string 
+*/
+string convertNumUsingMap(string num, unordered_map<char, char> map){
+    string convertedNum = "";
+    for(int i = 0 ; i < num.size(); i++){
+        convertedNum += map[num[i]];
+    }
+    return convertedNum;
+}
+
 string succ_alien(string num, string alphabets){
     int base = alphabets.size();
     auto bidirectionalMaps = getBidirectionalMaps(alphabets);
     auto alphabetToDigitMap = bidirectionalMaps.first;
     auto digitToAlphabetMap = bidirectionalMaps.second;
-    string numericNum = "";
-    for(int i = 0 ; i < num.size(); i++){
-        numericNum += alphabetToDigitMap[num[i]];
-    }
+    string numericNum = convertNumUsingMap(num, alphabetToDigitMap);
     string numericAns = "";
     int carry = 1;
     int i = numericNum.size()-1;
@@ -37,10 +48,7 @@ string succ_alien(string num, string alphabets){
         i--;
     }
     if(carry) numericAns = string(1, carry + '0') + numericAns;
-    string ans = "";
-    for(int i = 0 ; i < numericAns.size(); i++){
-        ans += digitToAlphabetMap[numericAns[i]];
-    }
+    string ans = convertNumUsingMap(numericAns, digitToAlphabetMap);
     cout<<num<<" -> "<<numericNum<<" -> "<<numericAns<<" -> "<<ans<<endl;
     return ans;
 }
