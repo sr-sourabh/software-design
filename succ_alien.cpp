@@ -2,6 +2,26 @@
 using namespace std;
 
 /*
+Returns a char representation for an int n.
+Useful in situations when the base is more than 10.
+Eg: n = 12 returns C
+*/
+char getCharDigitFromInteger(int n){
+    if(n < 10) return n + '0';
+    else return 'A' + n - 10;
+}
+
+/*
+Returns a int representation for char n.
+Useful in situations when the base is more than 10.
+Eg: n = C returns 12
+*/
+int getIntegerDigitFromChar(char n){
+    if(n <= '9') return n - '0';
+    else return n - 'A' + 10;
+}
+
+/*
 Given alphabets of a number system this function returns both way maps.
 i.e alphabet to digit and digit to alphabet maps
 Digits start with 0,1,2 etc for corresponding alphabet positions in alpbhabet string
@@ -11,8 +31,9 @@ Return : pair of {alphabetToDigitMap, digitToAlphabetMap}
 pair<unordered_map<char, char>, unordered_map<char, char>> getBidirectionalMaps(string alphabets){
     unordered_map<char, char> alphabetToDigitMap, digitToAlphabetMap;
     for(int i = 0 ; i < alphabets.size(); i++){
-        alphabetToDigitMap[alphabets[i]] = i + '0';
-        digitToAlphabetMap[i+'0'] = alphabets[i];
+        char digit = getCharDigitFromInteger(i);
+        alphabetToDigitMap[alphabets[i]] = digit;
+        digitToAlphabetMap[digit] = alphabets[i];
     }
     return {alphabetToDigitMap, digitToAlphabetMap};
 }
@@ -36,13 +57,13 @@ string incrementNum(string num, int base){
     int carry = 1;
     int i = num.size()-1;
     while(i > -1){
-        int digit = num[i] - '0' + carry;
+        int digit = getIntegerDigitFromChar(num[i]) + carry;
         int unitDigit = digit % base;
-        ans = string(1, unitDigit + '0') + ans;
+        ans = string(1, getCharDigitFromInteger(unitDigit)) + ans;
         carry = digit / base;
         i--;
     }
-    if(carry) ans = string(1, carry + '0') + ans;
+    if(carry) ans = string(1, getCharDigitFromInteger(carry)) + ans;
     return ans;
 }
 
@@ -63,10 +84,18 @@ string succ_alien(string num, string alphabets){
 }
 
 int main() {
-    string alphabets = "!@^&*";
-    vector<string> testCases = {"!@^&*", "!@^*!", "!@^*@", "!@^*^", "!@^*&",
-    "!@^**", "*********", "!!!!", "!", "@", "^", "&", "*", "@*"};
+    // {alphabets of alien representation, strings numbers to be tested in alient representation}
+    vector<pair<string, vector<string>>> testCases = {
+        {"!@^&*", {"!@^&*", "****", "!!!!", "!", "@", "^", "&", "*", "@*"}},
+        {"0123456789", {"123", "345", "99", "19"}},
+        {"0123456789ABCDEF", {"8AB", "F", "FFF", "8FF", "88"}}
+    };
     for(auto &e : testCases){
-        succ_alien(e, alphabets);
+        string alphabets = e.first;
+        cout<<"For alphabets = "<<alphabets<<endl;
+        for(auto &ee : e.second){
+            succ_alien(ee, alphabets);
+        }
+        cout<<endl;
     }
 }
