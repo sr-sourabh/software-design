@@ -31,25 +31,34 @@ string convertNumUsingMap(string num, unordered_map<char, char> map){
     return convertedNum;
 }
 
+string incrementNum(string num, int base){
+    string ans = "";
+    int carry = 1;
+    int i = num.size()-1;
+    while(i > -1){
+        int digit = num[i] - '0' + carry;
+        int unitDigit = digit % base;
+        ans = string(1, unitDigit + '0') + ans;
+        carry = digit / base;
+        i--;
+    }
+    if(carry) ans = string(1, carry + '0') + ans;
+    return ans;
+}
+
+void displayResult(string num, string numericNum, string numericAns, string ans){
+    cout<<num<<" -> "<<numericNum<<" -> "<<numericAns<<" -> "<<ans<<endl;
+}
+
 string succ_alien(string num, string alphabets){
     int base = alphabets.size();
     auto bidirectionalMaps = getBidirectionalMaps(alphabets);
     auto alphabetToDigitMap = bidirectionalMaps.first;
     auto digitToAlphabetMap = bidirectionalMaps.second;
     string numericNum = convertNumUsingMap(num, alphabetToDigitMap);
-    string numericAns = "";
-    int carry = 1;
-    int i = numericNum.size()-1;
-    while(i > -1){
-        int digit = numericNum[i] - '0' + carry;
-        int unitDigit = digit % base;
-        numericAns = string(1, unitDigit + '0') + numericAns;
-        carry = digit / base;
-        i--;
-    }
-    if(carry) numericAns = string(1, carry + '0') + numericAns;
+    string numericAns = incrementNum(numericNum, base);
     string ans = convertNumUsingMap(numericAns, digitToAlphabetMap);
-    cout<<num<<" -> "<<numericNum<<" -> "<<numericAns<<" -> "<<ans<<endl;
+    displayResult(num, numericNum, numericAns, ans);
     return ans;
 }
 
